@@ -1,5 +1,6 @@
 function ArrayModule(){
 	var value = [];
+	var tPosition
 	var fontColor = [];
 	var backgroundColor = [];
 		
@@ -45,24 +46,16 @@ function ArrayModule(){
 							.text(function(d){return d;})
 							.attr("x",function(d,i){return 100+100*i;})
 							.attr("y",100);
+		var triangle = container.selectAll("text.tri")
+								.data()
 		text.transition().duration(1000).attr("opacity",100).remove();
 		text.exit();
 
-		// container = d3.select("body")
-		// .append("svg")
-		// .attr("width",1000)
-		// .attr("height",1000);
 
-		// text = container.selectAll("text")
-		// .data(value)
-		// .enter()
-		// .append("text")
-		// .attr("x",function(d,i){return 50+i*50})
-		// .attr("y",100)
-		// .text(function(d){return d;})
-		// .attr("font-family","sans-serif")
-		// .attr("font-size","20px")
-		// .attr("fill","black");
+		svg.append("polyline")
+		.attr("points", "05,30 15,10 25,30")
+		.attr("stroke-width", "2px")
+		.attr("stroke", "black");
 		
 
 		
