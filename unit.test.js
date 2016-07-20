@@ -41,6 +41,7 @@ QUnit.module("unit.test.js", function (hooks) {
 			var i;
 			var j;
 			var len = value.length;
+			
 			for(i = 1; i < len; i++){
 				temp = value[i];
 				j = i-1;
@@ -54,7 +55,7 @@ QUnit.module("unit.test.js", function (hooks) {
 
 		}
 
-
+		
 		return {
 			getValue : getValue,
 			Push : Push,
