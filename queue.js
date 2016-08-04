@@ -7,7 +7,7 @@ function Queue(){
 
 	
 	var rect, text, label,rectNum = 0, textNum = 0;
-	var arrow1, arroww;
+	var arrow1, arrow2;
 	var front = 0, rear = 4, bf = 0, br = 0;
 	var value = [1,2,3,4,5];
 	var visit;
