@@ -141,7 +141,7 @@
 				.attr("x",function(d,i){return 100+(padding+rectWidth)*i+rectWidth/3;})
 				.attr("y",100+rectHeight/3*2)
 				.attr("fill","white")
-				.attr("id","#textIdx"+i);
+				.attr("id",function(d,i){return "#textIdx"+ i;});
 
 
 		arrow1 = container.append("g");
