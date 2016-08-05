@@ -8,7 +8,7 @@ function bSearch(){
 	
 	var rect, text;
 	var arrow1, arrow2;
-	var low = 0, high = 11, target = 28;
+	var low = 0, high = 11, target = 29;
 	var value = [3, 7, 28, 29, 43, 49, 55, 58, 69, 77, 79, 99];
 	var rectWidth = 40;
 	var rectHeight = 40;
@@ -22,8 +22,8 @@ function bSearch(){
 		if( text !== undefined ){
 			text.remove().exit();
 			rect.remove().exit();
-			arrow1.remove().exit();
-			arrow2.remove().exit();
+			// arrow1.remove().exit();
+			// arrow2.remove().exit();
 		}
 
 		
@@ -65,31 +65,31 @@ function bSearch(){
 				})
 				.attr("id",function(d,i){return "#textIdx"+ i;});
 
-		arrow1 = container.append("g");
-		arrow1.append("svg:path")
-		.attr("d","M0,10L5,4L10,10")
-		.attr("fill","#6B7A8F");
+		// arrow1 = container.append("g");
+		// arrow1.append("svg:path")
+		// .attr("d","M0,10L5,4L10,10")
+		// .attr("fill","#6B7A8F");
 
-		arrow1.append("text")
-		.text("low")
-		.attr("x",function(){return -rectWidth/5;})
-		.attr("y",30)
-		.attr("fill","#6B7A8F");
-		arrow1.attr("transform","translate("+ (100+(padding+rectWidth)*low + rectWidth/3)+","+(rectHeight+100)+")");
+		// arrow1.append("text")
+		// .text("low")
+		// .attr("x",function(){return -rectWidth/5;})
+		// .attr("y",30)
+		// .attr("fill","#6B7A8F");
+		// arrow1.attr("transform","translate("+ (100+(padding+rectWidth)*low + rectWidth/3)+","+(rectHeight+100)+")");
 
 
-		arrow2 = container.append("g");
-		arrow2.append("svg:path")
-		.attr("d","M0,10L5,4L10,10")
-		.attr("fill","#6B7A8F");
+		// arrow2 = container.append("g");
+		// arrow2.append("svg:path")
+		// .attr("d","M0,10L5,4L10,10")
+		// .attr("fill","#6B7A8F");
 		
-		arrow2.append("text")
-		.text("high")
-		.attr("x",function(){return -rectWidth/4;})
-		.attr("y",30)
-		.attr("fill","#6B7A8F");
+		// arrow2.append("text")
+		// .text("high")
+		// .attr("x",function(){return -rectWidth/4;})
+		// .attr("y",30)
+		// .attr("fill","#6B7A8F");
 
-		arrow2.attr("transform","translate("+ (100+(padding+rectWidth)*high + rectWidth/3)+","+(rectHeight+100)+")");
+		// arrow2.attr("transform","translate("+ (100+(padding+rectWidth)*high + rectWidth/3)+","+(rectHeight+100)+")");
 		
 		
 
@@ -185,6 +185,9 @@ function bSearch(){
 						high = mid-1;
 					else
 						low = mid+1;
+					d3.select("#rectIdx"+mid)
+						.transition()
+						.attr("fill","#F7C331");
 					translateArrow();
 					callback(null);
 				},300);
@@ -242,10 +245,10 @@ function bSearch(){
 	}
 	
 	var translateArrow = function(){
-		arrow1.transition()
-				.attr("transform","translate("+ (100+(padding+rectWidth)*low + rectWidth/3)+ ","+(rectHeight+100)+")");
-		arrow2.transition()
-				.attr("transform","translate("+ (100+(padding+rectWidth)*high + rectWidth/3)+ ","+(rectHeight+100)+")");
+		// arrow1.transition()
+		// 		.attr("transform","translate("+ (100+(padding+rectWidth)*low + rectWidth/3)+ ","+(rectHeight+100)+")");
+		// arrow2.transition()
+		// 		.attr("transform","translate("+ (100+(padding+rectWidth)*high + rectWidth/3)+ ","+(rectHeight+100)+")");
 	}
 
 
@@ -268,6 +271,20 @@ async.series([
 					a.highlightMid();
 					callback(null);
 
+				},1500);
+			},
+			function(callback){
+				setTimeout(function(){
+					a.drawArray();
+					callback(null);
+
+				},2000);
+			},
+			function(callback){
+				setTimeout(function(){
+					a.highlightMid();
+					callback(null);
+
 				},2000);
 			},
 			function(callback){
@@ -282,14 +299,14 @@ async.series([
 					a.highlightMid();
 					callback(null);
 
-				},3000);
+				},2000);
 			},
 			function(callback){
 				setTimeout(function(){
 					a.drawArray();
 					callback(null);
 
-				},300);
+				},1000);
 			}
 			], function(err, results){
 				console.log("완료");
