@@ -44,10 +44,14 @@ function stack(){
 		async.series([
 			function(callback){
 				setTimeout(function(){
+
+					var position = 700-(rectHeight+padding)*top;
+					var distance = 300;
+
 					newElem = container.append("g");
 					 newElem.append("rect")
 						.attr("x",300)
-						.attr("y",100)
+						.attr("y",position-distance)
 						.attr("width",rectWidth)
 						.attr("height",rectHeight)
 						.attr("fill","#FAAF08")
@@ -57,18 +61,18 @@ function stack(){
 					newElem.append("text")
 						.text(_value)
 						.attr("x",function(){return 300+rectWidth/2;})
-					 	.attr("y",function(){return 100+rectHeight/5*3;})
+					 	.attr("y",function(){return position-distance+rectHeight/5*3;})
 						.attr("fill","black")
 						.attr("font-family","Consolas")
 						.attr("font-size","20px")
 						.attr("text-anchor","middle");
 		
-					var distance = (700-(rectHeight+padding)*top)-100;
+
 					newElem.transition()
 						.attr("transform","translate(0,"+distance+")").ease(d3.easeSinOut);
 						callback(null);
 						//newElem.remove().exit();
-				},1000);
+				},700);
 			},
 			function(callback){
 				setTimeout(function(){
@@ -100,11 +104,13 @@ function stack(){
 				setTimeout(function(){
 	
 					drawStack();
+					var position = 700-(rectHeight+padding)*(top+1);
+					var distance = 300;
 
 					newElem = container.append("g");
 					 newElem.append("rect")
 						.attr("x",300)
-						.attr("y",700-(rectHeight+padding)*(top+1))
+						.attr("y",position)
 						.attr("width",rectWidth)
 						.attr("height",rectHeight)
 						.attr("fill","#FAAF08")
@@ -114,18 +120,18 @@ function stack(){
 					newElem.append("text")
 						.text(_value)
 						.attr("x",function(){return 300+rectWidth/2;})
-					 	.attr("y",function(){return 700-(rectHeight+padding)*(top+1)+rectHeight/5*3;})
+					 	.attr("y",function(){return position+rectHeight/5*3;})
 						.attr("fill","black")
 						.attr("font-family","Consolas")
 						.attr("font-size","20px")
 						.attr("text-anchor","middle");
 		
-					var distance = -(700-(rectHeight+padding)*(top+1)-100);
+					
 					newElem.transition()
-						.attr("transform","translate(0,"+distance+")").ease(d3.easeSinOut);
+						.attr("transform","translate(0,"+(-distance)+")").ease(d3.easeSinOut);
 						callback(null);
 						
-				},1000);
+				},700);
 			},
 			function(callback){
 				setTimeout(function(){
