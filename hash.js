@@ -19,7 +19,7 @@ function hash(){
 
 	var MAX_TABLE = 4096
 	var hash;
-	var hashData = [];
+	var hashTable = [];
 	
 	var top = -1;
 	var rectWidth = 200;
@@ -29,171 +29,138 @@ function hash(){
 
 	var init = function(){
 		for(var i = 0; i < MAX_TABLE; i++){
-			hashData.push({key: "", data:""});
+			hashTable.push({key: "", data:""});
 		}
 	}
 
-	var Push = function(_value, done){
-		var newElem;
+	var getHash = function(str){
+		var h = 5381;
+		for(var i = 0; i < str.length; i++){
+			h  = (((h <<5) + h)+str[i].charCodeAt(0))%MAX_TABLE;
+		}
 
-		top++;
-		hashData.push(_value);
-
-		async.series([
-			function(callback){
-				setTimeout(function(){
-
-					var position = 700-(rectHeight+padding)*top;
-					var distance = 300;
-
-					newElem = container.append("g");
-					 newElem.append("rect")
-						.attr("x",300)
-						.attr("y",position-distance)
-						.attr("width",rectWidth)
-						.attr("height",rectHeight)
-						.attr("fill","#FAAF08")
-						.attr("rx",10)
-						.attr("ry",10);
-
-					newElem.append("text")
-						.text(_value)
-						.attr("x",function(){return 300+rectWidth/2;})
-					 	.attr("y",function(){return position-distance+rectHeight/5*3;})
-						.attr("fill","black")
-						.attr("font-family","Consolas")
-						.attr("font-size","20px")
-						.attr("text-anchor","middle");
-		
-
-					newElem.transition()
-						.attr("transform","translate(0,"+distance+")").ease(d3.easeSinOut);
-						callback(null);
-						//newElem.remove().exit();
-				},700);
-			},
-			function(callback){
-				setTimeout(function(){
-					newElem.remove().exit();
-					drawHash();
-
-					callback(null);
-				},500);
-			}
-		], function(err, results){
-			done();
-			console.log("완료");
-		});
+		return h;
 	}
 
-	var Pop = function(done){
+	var find = function(key, data){
+		var h = getHash(key);
+		var cnt = MAX_TABLE;
+		console.log(hashTable[h]);
+		while( hashTable[h].key.length && cnt--){
+			if( hashTable[h].key == key){
+				console.log("find"+h);
+				d3.select("#hashInfo"+h)
+				.transition()
+				.attr("font-size","20px")
+				.attr("fill","#011A27");
 
-		if(top === -1)
-			return ;
+				d3.select("#hashInfo"+h)
+				.transition()
+				.attr("font-size","12px")
+				.attr("fill","#1995AD")
+				.delay(1000);
+				return 
+			}
+			h = (h+1)%MAX_TABLE;
+		}
+		
+		hash.append("text")
+		.text("not Find")
+		.attr("x",100)
+		.attr("y",300)
+		.attr("font-family","Consolas")
+		.attr("font-size","20px")
+		.attr("fill","#004445")
+		.attr("id","message");
 
-		var newElem;
+		console.log(d3.select("#message"));
+		d3.select("#message")
+		.transition()
+		.attr("font-size","30px")
+		.delay(300);
 
-		var _value = hashData[top];
-		hashData.pop();
-		top--;
+		setTimeout(function(){
+			d3.select("#message").remove();
+		},1500);
+		//d3.select("#message").remove();
+		
+		return 0;
 
-		async.series([
-			function(callback){
-				setTimeout(function(){
+	}
+
+
+	var add = function(key, data){
+		var h = getHash(key);
+
+		while( hashTable[h].key.length){
+			if( hashTable[h].key == key)
+				return 0;
+			h = (h+1)%MAX_TABLE;
+		}
+
+		hashTable[h].key = key;
+		hashTable[h].data = data;
+		console.log(h);
+		drawHash();
+		return 1;
+	}
+
 	
-					drawHash();
-					var position = 700-(rectHeight+padding)*(top+1);
-					var distance = 300;
-
-					newElem = container.append("g");
-					 newElem.append("rect")
-						.attr("x",300)
-						.attr("y",position)
-						.attr("width",rectWidth)
-						.attr("height",rectHeight)
-						.attr("fill","#FAAF08")
-						.attr("rx",10)
-						.attr("ry",10);
-
-					newElem.append("text")
-						.text(_value)
-						.attr("x",function(){return 300+rectWidth/2;})
-					 	.attr("y",function(){return position+rectHeight/5*3;})
-						.attr("fill","black")
-						.attr("font-family","Consolas")
-						.attr("font-size","20px")
-						.attr("text-anchor","middle");
-		
-					
-					newElem.transition()
-						.attr("transform","translate(0,"+(-distance)+")").ease(d3.easeSinOut);
-						callback(null);
-						
-				},700);
-			},
-			function(callback){
-				setTimeout(function(){
-					newElem.remove().exit();
-					drawHash();
-					callback(null);
-				},500);
-			}
-		], function(err, results){
-			done();
-			console.log("완료");
-		});
-	}
-
-
 	var drawHash = function(){
 		
 		if( hash !== undefined){
 			hash.remove().exit();
 		}
 
-		if(hashData.length === 0)
+		if(hashTable.length === 0)
 			return ;
 		d3.selectAll("#container").call(zoom);
 
 
 		hash = container.append("g");
 		hash.selectAll("g.rect")
-			.data(hashData)
+			.data(hashTable)
 			.enter()
 			.append("rect")
 			.attr("x",300)
 			.attr("y",function(d,i){return 30+(rectHeight+padding)*i;})
-			.attr("width",rectWidth)
-			.attr("height",rectHeight)
+			.attr("width",function(d,i){if(hashTable[i].key.length) return rectWidth*1.01;
+				else return rectWidth;})
+			.attr("height",function(d,i){if(hashTable[i].key.length)return rectHeight*10;
+				else return rectHeight;})
 			.attr("rx",10)
 			.attr("ry",10)
-			.attr("fill","#FFCCAC")
+			.attr("fill",function(d,i){ if( hashTable[i].key.length) return "#011A27";
+				else return "#FFCCAC";})
 			.attr("id",function(d,i){return "rectIdx"+i;})
 			.attr("opacity",1.0)
 			.on("mouseover",mouseOver)
 			.on("mouseout",mouseOut);
 
-		// hash.selectAll("g.text")
-		// 	.data(hashData)
-		// 	.enter()
-		// 	.append("text")
-		// 	.text(function(d,i){return d;})
-		// 	.attr("x",function(){return 300+rectWidth/2;})
-		//  	.attr("y",function(d,i){return 700-(rectHeight+padding)*i +rectHeight/5*3;})
-		// 	.attr("fill","black")
-		// 	.attr("font-family","Consolas")
-		// 	.attr("font-size","20px")
-		// 	.attr("text-anchor","middle")
-		// 	.attr("id",function(d,i){return "textIdx"+i;});
+		for(var i = 0; i < MAX_TABLE; i++){
+			if( hashTable[i].key.length){
+				console.log("draw"+i);
+				hash.append("text")
+					.text(function(){
+						var str = "Hash["+ i +"] : " ;
+						if( hashTable[i].key !== undefined)
+							str += "key = "+hashTable[i].key;
+						
+						
+						if( hashTable[i].data !== undefined)
+							str += " , data = "+ hashTable[i].data;
 
-		// hash.append("text")
-		// 	.text("top →")
-		// 	.attr("x",function(){return 300-rectWidth/2;})
-		//  	.attr("y",function(){return 700-(rectHeight+padding)*top +rectHeight/5*3;})
-		// 	.attr("fill","black")
-		// 	.attr("font-family","Consolas")
-		// 	.attr("font-size","20px")
-		// 	.attr("text-anchor","middle");
+
+						return str;
+					})
+					.attr("font-family","Consolas")
+					.attr("font-size","12px")
+					.attr("fill","#1995AD")
+					.attr("id",function(){return "hashInfo"+i})
+					.attr("x",function(){return 300+rectWidth*1.1;})
+					.attr("y",function(){return 30+(rectHeight+padding)*i+rectHeight*50});
+			}
+		}
 	
 	}
 
@@ -210,17 +177,17 @@ function hash(){
 		hash.append("text")
 		.text(function(){
 			var str = "Hash["+ i +"] : " ;
-			if( hashData[i].key !== undefined)
-				str += "key = "+hashData[i].key;
+			if( hashTable[i].key !== undefined)
+				str += "key = "+hashTable[i].key;
 			
 			
-			if( hashData[i].data !== undefined)
-				str += " , data = "+ hashData[i].data;
+			if( hashTable[i].data !== undefined)
+				str += " , data = "+ hashTable[i].data;
 
 
 			return str;})
 		.attr("font-family","Consolas")
-		.attr("font-size","20px")
+		.attr("font-size","15px")
 		.attr("fill","black")
 		.attr("id","arrInfo")
 		.attr("x",function(){return 300+rectWidth*1.1;})
@@ -240,20 +207,7 @@ function hash(){
 		
 	}
 
-	
 
-	// function dragstarted(d) {
-	//   d3.event.sourceEvent.stopPropagation();
-	//   d3.select(this).classed("dragging", true);
-	// }
-
-	// function dragged(d) {
-	//   d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
-	// }
-
-	// function dragended(d) {
-	//   d3.select(this).classed("dragging", false);
-	// }
 
 	function zoomed() {
 	//	console.log("zooom");
@@ -262,23 +216,25 @@ function hash(){
 
 	return {
 		init : init,
-		Push : Push,
-		Pop : Pop,
+		getHash : getHash,
+		Find : find,
+		Add : add,
 		drawHash : drawHash
 	};
 }
 
 var add = function (_data){
-	console.log(_data.elements[0].value);
-	console.log(_data.elements[1].value);
-	a.Push(_data.elements[0].value,function(){});
+	// console.log(_data.elements[0].value);
+	// console.log(_data.elements[1].value);
+	// a.Push(_data.elements[0].value,function(){});
+	//console.log(add);
+	a.Add(_data.elements[0].value,_data.elements[1].value);
 	//a.drawHash();
 }
 
 var find = function(_data){
-	console.log(_data.elements[0].value);
-	console.log(_data.elements[1].value);
-	a.Pop(function(){});
+	console.log("find");
+	a.Find(_data.elements[0].value,_data.elements[1].value);
 }
 
 var a = new hash();
