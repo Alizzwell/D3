@@ -9,7 +9,7 @@ void quickSort(int first, int last)
 {
 	int pivot;
 	int i;
-	int j;
+	int j; 
 	int temp;
 	
 	if (first < last)
