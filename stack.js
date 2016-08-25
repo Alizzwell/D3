@@ -38,7 +38,7 @@ function stack(){
 		
 					var distance = (300-(rectHeight+padding)*top)-100;
 					newElem.transition()
-						.attr("transform","translate(0,"+distance+")").duration(500).ease(bounce);
+						.attr("transform","translate(0,"+distance+")").duration(500).ease(d3.easeElasticOut);
 						callback(null);
 						//newElem.remove().exit();
 				},700);
@@ -86,7 +86,7 @@ function stack(){
 		
 					var distance = -(300-(rectHeight+padding)*top-100);
 					newElem.transition()
-						.attr("transform","translate(0,"+distance+")").duration(500);
+						.attr("transform","translate(0,"+distance+")").duration(500).ease(d3.easeCubicOut);
 						callback(null);
 						//newElem.remove().exit();
 				},700);

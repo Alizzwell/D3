@@ -3,12 +3,14 @@ function ArrayModule(){
 	var tPosition
 	var fontColor = [];
 	var backgroundColor = [];
-		
+	var arrow1,arrow2;
 	var container = d3.select("body")
 						.append("svg")
 						.attr("width",1000)
 						.attr("height",1000)
 						.append("g");
+
+	var text;
 
 	var Concat = function(_value){
 		value = value.concat(_value);
@@ -27,85 +29,143 @@ function ArrayModule(){
 	};
 
 
-	var redraw = function(array){
-		// var text = container.append("text").text(p).attr("x",100).attr("y",100);
-		//text.transition().duration(1000).remove();
+	var swap = function(i,j){
 
-		//var text = container.selectAll("text").data([1,2,3]).enter().append("text").text(function(d){return d;}).attr("x",100).attr("y",function(d,i){return 100+i*100});
-		//text.transition().duration(1000).remove();
-		var text2 = container.selectAll("text.arr1").data(array).enter().append("text").text(function(d){return d;}).attr("x",100).attr("y",function(d,i){return 50+i*100});
-		text2.transition().duration(1000).attr("opacity",100).remove();
-		text2.exit();
 	}
 
+
+	var drawArrow = function(i,j){
+		arrow1 = container.append("svg:path")
+		.attr("d","M0,0L5,6L10,0")
+		.attr("fill","black")
+		.attr("transform","translate("+ (100+ 100*i)+",70)");
+
+		arrow2 = container.append("svg:path")
+		.attr("d","M0,0L5,6L10,0")
+		.attr("fill","black")
+		.attr("transform","translate("+ (100+ 100*j)+",70)");
+
+
+ //    function bumpArrow() {
+ //        arrow
+ //            .transition()
+ //            .attr('transform', 'translate(30,190),rotate(90),scale(2)')
+ //            .transition()
+ //            .attr('transform', 'translate(30,180),rotate(90),scale(2)')
+
+ //    }
+	}
+
+	var translateArrow = function(i,j){
+		arrow1.transition()
+				.attr("transform","translate("+ (100+ 100*i)+",70)");
+		arrow2.transition()
+				.attr("transform","translate("+ (100+ 100*j)+",70)");
+	}
+
+
 	var drawArray = function(){
-		var text = container.selectAll("text.arr")
-							.data(value)
+		if( text !== undefined ){
+			//text.transition().duration(100).attr("opacity",100).remove();
+			//text.exit();
+			text.remove().exit();
+			
+		}
+		text = container.selectAll("text.arr")
+					.data(value)
 							.enter()
 							.append("text")
 							.text(function(d){return d;})
+							.attr("id", function(d,i){return "Idx"+i;})
 							.attr("x",function(d,i){return 100+100*i;})
 							.attr("y",100);
-		var triangle = container.selectAll("text.tri")
-								.data()
-		text.transition().duration(1000).attr("opacity",100).remove();
-		text.exit();
 
+		// text.transition().duration(1000).attr("opacity",100).remove();
+		// text.exit();
+		
 
-		svg.append("polyline")
-		.attr("points", "05,30 15,10 25,30")
-		.attr("stroke-width", "2px")
-		.attr("stroke", "black");
 		
 
 		
 	};
+
+
 	
 	var InsertionSortCall = function(i,j,len,temp){
 		async.series([
-			function(callback){
+			function (callback) {
+				console.log("0초후!");
+
 				setTimeout(function () {
+					if(i >= len)
+						return ;
+					if(arrow1 === undefined)
+						drawArrow(i,j);
+					else
+						translateArrow(i,j);
+				
+					callback(null);
+				}, 2000);
+
+			},
+			function (callback) {
+				setTimeout(function(){
+					if( temp < value[j] && j >=0){
+						value[j+1] = value[j];
+						j = j-1;
+					}
+					else{
+						value[j+1] = temp;
+						i++;
+						temp = value[i];
+						j = i-1;
+					}
+					callback(null);
+				},100);
+
+			},
+			function (callback) {
+				setTimeout(function(){
 					drawArray();
 					callback(null);
-				},1000);
+				},100);
+
 			},
-			function(callback){
-				if(i >= len)
-					return;
-				else if( temp < value[j] && j>= 0){
-					value[j+1] = value[j];
-					InsertionSortCall(i,j-1,len,temp);
-				}
-				else{
-					value[j+1] = temp;
-					InsertionSortCall(i+1,i,len,value[i+1]);
-				}
+			function (callback) {
+				setTimeout(function(){
+					InsertionSortCall(i,j,len,temp);
+					callback(null);
+				},100);
+
 			}
-		],function(err,result){
-			console.log(err);
+		], function (err, results) {
+			console.log("완료");
+
 		});
 
+
+
+		
 	}
 
 
 	var InsertionSort = function(){
-			// var temp;
-			// var i;
-			// var j;
-			// var len = value.length;
 			
-			// for(i = 1; i < len; i++){
-			// 	temp = value[i];
-			// 	j = i-1;
-			// 	while((temp < value[j]) && (j>=0)){
-			// 		value[j+1] = value[j];
-			// 		j = j-1;
-			// 	}
+			async.series([
+				function(callback){
+					drawArray();
+					callback();
+				},
+				function(callback){
+					console.log(0);
+					InsertionSortCall(1,0,value.length,value[1]);
+					callback();
+				}
+			],function(err,result){
+				console.log(err);
+			});
 
-			// 	value[j+1] = temp;
-				
-			// }
-			InsertionSortCall(1,0,value.length,value[1]);
+			
 			console.log(1);
 	}
 
@@ -115,8 +175,7 @@ function ArrayModule(){
 		Push : Push,
 		Concat : Concat,
 		drawArray : drawArray,
-		InsertionSort : InsertionSort,
-		redraw : redraw
+		InsertionSort : InsertionSort
 	};
 }
 
@@ -125,3 +184,5 @@ var a = new ArrayModule();
 var arr = [5,4,3,2,1];
 a.Concat(arr);
 a.InsertionSort();
+
+
