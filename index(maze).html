@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width">
+  <script src = "Library/d3.js"></script>
+  <script src = "Library/async.min.js"></script>
+  
+
+  <title></title>
+	<style>
+    .wall {
+      background-color: black;
+    }
+    .start {
+      background-color: red;
+    }
+    .end {
+      background-color: green;
+    }
+    .load {
+      background-color: white;
+    }
+    .path{
+      background-color: #0000ff;
+    }
+  </style>
+</head>
+
+<body>
+	<!-- <button onclick="a.go()">click</button> -->
+  <div id = "section1"></div>
+  <div id = "section2">
+
+    <input type="file" id ="inputFile" accept="text/*">
+  	<form>
+  	
+  		
+  		go : <input type="button" value = "go", onClick="go(this.form); return false;"> <br/>
+      stop : <input type="button" value = "stop", onClick="stop(this.form); return false;"> <br/>
+      one step : <input type="button" value = "oneStep", onClick="oneStep(this.form); return false;"> 
+        
+      
+      <br/>
+  </form>
+
+  </div>
+
+  <script src="maze.js"></script> 
+
+</body>
+
+</html>
+
