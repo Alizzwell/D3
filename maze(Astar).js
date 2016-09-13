@@ -4,12 +4,12 @@ function Array2(){
     .on("zoom",zoomed);
 	var container =  d3.select("#section1")
 					.append("svg")
-					.attr("width",1000)
-					.attr("height",1000)
+					.attr("width",N0)
+					.attr("height",N0)
 					.attr("id","container")
 					.append("g");
 
-	var N = 100;
+	var N = 10;
 	var value = [];
 	var arr,visit;
 	
@@ -22,9 +22,9 @@ function Array2(){
 	var setData = function(){
 		//console.log(input);
 		var inputText =  input.split('\n');
-		for(var i =0 ; i < 100; i++){
+		for(var i =0 ; i < N; i++){
 			var tmp = [];
-			for(var j = 0 ; j < 100; j++){
+			for(var j = 0 ; j < N; j++){
 				tmp.push(parseInt(inputText[i][j]));
 				if(inputText[i][j] == 2){
 					sx = i;

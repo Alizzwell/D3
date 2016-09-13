@@ -3,12 +3,12 @@ var sstatus = 0;
 
 function Array2(){
 	 var zoom = d3.zoom()
-    .scaleExtent([0.1,10])
+    .scaleExtent([0.1,20])
     .on("zoom",zoomed);
 	var container =  d3.select("#section1")
 					.append("svg")
-					.attr("width",900)
-					.attr("height",900)
+					.attr("width",N0)
+					.attr("height",N0)
 					.attr("id","container")
 					.append("g");
 
@@ -82,23 +82,32 @@ function Array2(){
 			.selectAll("g.rect")
 			.data(function(d){return d;})
 			.enter()
-			.append("rect")
+			.append("image")
 			.attr("id",function(d,i){return "rectIdx"+(rectNum++);})
 			.attr("x",function(d,i){return (rectHeight+padding)*i;})
 			.attr("y",0)
-			.attr("fill",function(d){
+			.attr("xlink:href",function(d){
 				if( d == 1)
-					return "1E1F26";//#011A27";
+					return "vlc.png";//#011A27";
 				else if( d == 2)
 					return "red";
 				else if( d == 3)
 					return "green";
-				else return "#F1F1F2";
+				else return "grass.jpg";
 			})
 			.attr("width",rectWidth)
 			.attr("height",rectHeight);
 			//.attr("opacity",0.5);
 	
+
+		container
+		.append("image")
+		.attr("id","car")
+		.attr("xlink:href","car.png")
+		.attr("x",sx*(rectWidth+padding))
+		.attr("y",sy*(rectHeight+padding))
+		.attr("width",10)
+		.attr("height",10);
 		
 
 
